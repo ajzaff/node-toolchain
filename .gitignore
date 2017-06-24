@@ -1,1 +1,3 @@
 /out/
+**/.npmrc
+**/npm-debug.log

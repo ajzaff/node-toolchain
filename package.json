@@ -1,6 +1,6 @@
 {
   "name": "@toolchain/node",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Docker toolchain for node apps",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "generate": "./scripts/generate.sh",
     "clean-generate": "npm run clean && npm run generate",
     "clean-build": "npm run clean-generate && npm run build",
-    "publish": "npm publish --access=public"
+    "release": "npm run clean-build && npm publish --access=public"
   },
   "author": "",
   "license": "ISC"

@@ -2,32 +2,34 @@
 
 set -e
 
-mkdir -p out
+generate() {
+  version=$1
+  nodetag=$2
+  tag=$3
+  echo "---> $tag"
+  sed -e "s/{{__toolchain_base_image__}}/node:$nodetag/" \
+      -e "s/{{__toolchain_version__}}/$version/" \
+      -e "s/{{__toolchain_tag__}}/$tag/" Dockerfile \
+      > "out/Dockerfile-$tag"
+}
+
 
 version_patch=$(node -e "process.stdout.write(require('./package.json').version)")
 version_minor=$(echo -n ${version_patch} | grep -o [0-9].[0-9] | head -1)
 version_major=$(echo -n ${version_patch} | grep -o [0-9] | head -1)
 
+git tag -as v$version_patch
+
+mkdir -p out
+
 echo generate v$version_patch
 echo
 
+generate $version_patch alpine latest
+
 for tag in $(cat tags.txt)
 do
-  echo "---> ${version_patch}-node-${tag}"
-  sed -e "s/{{__toolchain_base_image__}}/node:$tag/" \
-      -e "s/{{__toolchain_version__}}/${version_patch}/" \
-      -e "s/{{__toolchain_tag__}}/${version_patch}-node-${tag}/" Dockerfile \
-      > "out/Dockerfile-${version_patch}-node-${tag}"
-
-  echo "---> ${version_minor}-node-${tag}"
-  sed -e "s/{{__toolchain_base_image__}}/node:$tag/" \
-      -e "s/{{__toolchain_version__}}/${version_minor}/" \
-      -e "s/{{__toolchain_tag__}}/${version_minor}-node-${tag}/" Dockerfile \
-      > "out/Dockerfile-${version_minor}-node-${tag}"
-
-  echo "---> ${version_major}-node-${tag}"
-  sed -e "s/{{__toolchain_base_image__}}/node:$tag/" \
-      -e "s/{{__toolchain_version__}}/${version_major}/" \
-      -e "s/{{__toolchain_tag__}}/${version_major}-node-${tag}/" Dockerfile \
-      > "out/Dockerfile-${version_major}-node-${tag}"
+  generate $version_patch $tag $version_patch-node-$tag
+  generate $version_minor $tag $version_minor-node-$tag
+  generate $version_major $tag $version_major-node-$tag
 done

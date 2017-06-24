@@ -3,9 +3,9 @@
 set -e
 
 generate() {
-  version=$1
-  nodetag=$2
-  tag=$3
+  local version=$1
+  local nodetag=$2
+  local tag=$3
   echo "---> $tag"
   sed -e "s/{{__toolchain_base_image__}}/node:$nodetag/" \
       -e "s/{{__toolchain_version__}}/$version/" \
@@ -17,8 +17,6 @@ generate() {
 version_patch=$(node -e "process.stdout.write(require('./package.json').version)")
 version_minor=$(echo -n ${version_patch} | grep -o [0-9].[0-9] | head -1)
 version_major=$(echo -n ${version_patch} | grep -o [0-9] | head -1)
-
-git tag -as v$version_patch
 
 mkdir -p out
 

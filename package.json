@@ -1,6 +1,6 @@
 {
   "name": "@toolchain/node",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Docker toolchain for node apps",
   "main": "index.js",
   "scripts": {
